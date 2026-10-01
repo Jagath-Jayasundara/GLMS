@@ -1,0 +1,369 @@
+:root {
+    --primary-color: #0d47a1;
+    --primary-light: #1565c0;
+    --primary-dark: #002171;
+    --secondary-color: #ff8f00;
+    --bg-light: #f4f6f9;
+    --card-bg: #ffffff;
+    --text-dark: #212529;
+    --text-muted: #6c757d;
+    --border-color: #de2027;
+    --success-color: #2e7d32;
+    --warning-color: #ed6c02;
+    --danger-color: #d32f2f;
+    --info-color: #0288d1;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    line-height: 1.5;
+    min-height: 100vh;
+}
+
+/* Header & Banner */
+.gov-header {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    color: white;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.gov-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.emblem-icon {
+    font-size: 28px;
+}
+
+.gov-title h1 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.gov-title p {
+    font-size: 0.75rem;
+    opacity: 0.85;
+}
+
+.user-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-badge {
+    text-align: right;
+    font-size: 0.85rem;
+}
+
+.user-role-chip {
+    display: inline-block;
+    background: var(--secondary-color);
+    color: #000;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+/* Navigation Bar */
+.app-nav {
+    background: white;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0 20px;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+}
+
+.nav-item {
+    padding: 12px 16px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.nav-item.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+/* Main Layout */
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+/* Auth / Login Container */
+.login-container {
+    max-width: 420px;
+    margin: 60px auto;
+    background: white;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border-top: 5px solid var(--primary-color);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.login-header h2 {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+/* Cards & Components */
+.card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 8px;
+}
+
+/* Grid Layouts */
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 15px;
+}
+
+.grid-4 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+/* Leave Balance Tile */
+.balance-tile {
+    background: #f8fafc;
+    border-left: 4px solid var(--primary-color);
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.balance-tile h4 {
+    font-size: 0.95rem;
+    color: #334155;
+    margin-bottom: 8px;
+}
+
+.balance-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.balance-number {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.balance-sub {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #475569;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.1);
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-secondary {
+    background-color: #64748b;
+    color: white;
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* Tables */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+table.data-table th, table.data-table td {
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+table.data-table th {
+    background-color: #f1f5f9;
+    color: #334155;
+    font-weight: 700;
+}
+
+/* Status Badges */
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.badge-approved {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.badge-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.badge-cancelled {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+/* Notification List */
+.notification-item {
+    padding: 12px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 0.85rem;
+}
+
+.notification-item.unread {
+    background-color: #e3f2fd;
+    border-left: 3px solid var(--primary-color);
+}
+
+.notification-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Responsive adjust */
+@media (max-width: 768px) {
+    .gov-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .user-nav {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .container {
+        padding: 0 10px;
+    }
+}

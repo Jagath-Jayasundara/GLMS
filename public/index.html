@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GELMS - Government Employee Leave Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header Banner -->
+    <header class="gov-header">
+        <div class="gov-brand">
+            <span class="emblem-icon">🏛️</span>
+            <div class="gov-title">
+                <h1>Government Employee Leave Management System</h1>
+                <p>Government of Sri Lanka • GELMS Portal</p>
+            </div>
+        </div>
+        <div class="user-nav" id="userNav" style="display: none;">
+            <div class="user-badge">
+                <div id="navUserName" style="font-weight: bold;">Employee Name</div>
+                <span class="user-role-chip" id="navUserRole">ROLE</span>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="logoutBtn">Logout</button>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="app-nav" id="appNav" style="display: none;">
+        <a class="nav-item active" data-tab="dashboard">Dashboard</a>
+        <a class="nav-item" data-tab="applyLeave">Apply Leave</a>
+        <a class="nav-item" data-tab="leaveHistory">My Applications</a>
+        <a class="nav-item supervisor-only" data-tab="approvals" style="display:none;">Approvals</a>
+        <a class="nav-item hr-only" data-tab="employees" style="display:none;">Employees</a>
+        <a class="nav-item hr-only" data-tab="leaveTypes" style="display:none;">Leave Types</a>
+        <a class="nav-item admin-only" data-tab="users" style="display:none;">User Admin</a>
+        <a class="nav-item admin-hr-sup" data-tab="reports" style="display:none;">Reports</a>
+        <a class="nav-item admin-hr" data-tab="auditLogs" style="display:none;">Audit Logs</a>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="container">
+
+        <!-- LOGIN VIEW -->
+        <div id="loginView" class="login-container">
+            <div class="login-header">
+                <h2>System Login</h2>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Sign in to access your GELMS account</p>
+            </div>
+            <div id="loginError" class="badge badge-rejected" style="display: none; width: 100%; margin-bottom: 15px; text-align: center;"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username / Employee ID</label>
+                    <input type="text" id="username" class="form-control" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            </form>
+            <div style="margin-top: 20px; font-size: 0.8rem; background: #eef2f7; padding: 10px; border-radius: 6px;">
+                <strong>Demo Credentials:</strong><br>
+                • Employee: <code>employee</code> / <code>Employee@123</code><br>
+                • Supervisor: <code>supervisor</code> / <code>Supervisor@123</code><br>
+                • HR Officer: <code>hrofficer</code> / <code>Hr@123456</code><br>
+                • Admin: <code>admin</code> / <code>Admin@123</code>
+            </div>
+        </div>
+
+        <!-- APP CONTENT VIEW -->
+        <div id="appContent" style="display: none;">
+
+            <!-- TAB 1: DASHBOARD -->
+            <div id="tab-dashboard" class="tab-page">
+                <div class="card">
+                    <div class="card-title">
+                        <span>Welcome, <span id="dashEmployeeName">Employee</span></span>
+                        <span style="font-size: 0.85rem; font-weight: normal; color: var(--text-muted);" id="dashDepartment">Department</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: #475569;">Year <span id="currentYearText"></span> Leave Entitlements & Balances</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Leave Entitlement & Remaining Balances</div>
+                    <div class="grid-3" id="leaveBalancesGrid">
+                        <!-- Balance tiles loaded dynamically -->
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-title">Notifications & Alerts</div>
+                        <div id="notificationsList" style="max-height: 250px; overflow-y: auto;">
+                            <p style="color: var(--text-muted); font-size: 0.85rem;">No recent notifications.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Quick Actions</div>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button class="btn btn-primary" onclick="switchTab('applyLeave')">📝 Submit Leave Application</button>
+                            <button class="btn btn-secondary" onclick="switchTab('leaveHistory')">📋 View My Leave History</button>
+                            <button class="btn btn-success supervisor-only" style="display:none;" onclick="switchTab('approvals')">⏳ View Pending Approvals</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: APPLY LEAVE -->
+            <div id="tab-applyLeave" class="tab-page" style="display: none;">
+                <div class="card" style="max-width: 650px; margin: 0 auto;">
+                    <div class="card-title">Submit Leave Application</div>
+                    <div id="applyMessage" style="display: none; margin-bottom: 15px;"></div>
+                    <form id="applyLeaveForm">
+                        <div class="form-group">
+                            <label for="applyLeaveType">Leave Type *</label>
+                            <select id="applyLeaveType" class="form-control" required>
+                                <option value="">-- Select Leave Type --</option>
+                            </select>
+                        </div>
+
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="applyStartDate">Start Date *</label>
+                                <input type="date" id="applyStartDate" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="applyEndDate">End Date *</label>
+                                <input type="date" id="applyEndDate" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="applyNumDays">Number of Days *</label>
+                            <input type="number" step="0.5" min="0.5" id="applyNumDays" class="form-control" placeholder="e.g. 1 or 0.5" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="applyReason">Reason for Leave *</label>
+                            <textarea id="applyReason" class="form-control" rows="3" placeholder="Provide clear reason for leave" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="applyAttachment">Supporting Document / Certificate (Optional / Base64/Path)</label>
+                            <input type="file" id="applyAttachment" class="form-control">
+                            <small style="color: var(--text-muted);">Required for Medical Leave >= 2 days.</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Submit Application</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB 3: MY LEAVE HISTORY -->
+            <div id="tab-leaveHistory" class="tab-page" style="display: none;">
+                <div class="card">
+                    <div class="card-title">My Leave Applications & History</div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>App ID</th>
+                                    <th>Leave Type</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Days</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="myLeaveHistoryBody">
+                                <!-- History rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: SUPERVISOR APPROVALS -->
+            <div id="tab-approvals" class="tab-page" style="display: none;">
+                <div class="card">
+                    <div class="card-title">Pending Leave Applications for Review</div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>App ID</th>
+                                    <th>Employee</th>
+                                    <th>Department</th>
+                                    <th>Leave Type</th>
+                                    <th>Dates</th>
+                                    <th>Days</th>
+                                    <th>Reason</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pendingApprovalsBody">
+                                <!-- Pending rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: EMPLOYEE MANAGEMENT (HR) -->
+            <div id="tab-employees" class="tab-page" style="display: none;">
+                <div class="card">
+                    <div class="card-title">
+                        <span>Employee Management</span>
+                        <button class="btn btn-primary btn-sm" onclick="toggleEmployeeModal(true)">+ Add New Employee</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>EMP No</th>
+                                    <th>Name</th>
+                                    <th>NIC</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    <th>Supervisor</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employeesTableBody">
+                                <!-- Employees list -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 6: LEAVE TYPE CONFIGURATION (HR) -->
+            <div id="tab-leaveTypes" class="tab-page" style="display: none;">
+                <div class="card">
+                    <div class="card-title">
+                        <span>Leave Types Configuration</span>
+                        <button class="btn btn-primary btn-sm" onclick="toggleLeaveTypeModal(true)">+ Add Leave Type</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Type Name</th>
+                                    <th>Max Days</th>
+                                    <th>Gender Restriction</th>
+                                    <th>Requires Document</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaveTypesTableBody">
+                                <!-- Leave types list -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 7: USER ADMIN -->
+            <div id="tab-users" class="tab-page" style="display: none;">
+                <div class="card">
+                    <div class="card-title">
+                        <span>System Users & Roles</span>
+                        <button class="btn btn-primary btn-sm" onclick="toggleUserModal(true)">+ Create User</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Employee Name</th>
+                                    <th>Created At</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- Users list -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 8: REPORTS -->
+            <div id="tab-reports" class="tab-page" style="display: none;">
+                <div class="card">
+                    <div class="card-title">Leave Reports Generator</div>
+                    <div class="grid-3" style="margin-bottom: 15px;">
+                        <div class="form-group">
+                            <label for="reportType">Report Type</label>
+                            <select id="reportType" class="form-control">
+                                <option value="applications">Leave Applications Summary</option>
+                                <option value="balances">Department Leave Balances</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportDept">Department</label>
+                            <select id="reportDept" class="form-control">
+                                <option value="">All Departments</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportYear">Year</label>
+                            <input type="number" id="reportYear" class="form-control">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="generateReportBtn">Generate Report</button>
+
+                    <div style="margin-top: 20px;" class="table-responsive">
+                        <table class="data-table" id="reportResultsTable">
+                            <thead id="reportTableHead"></thead>
+                            <tbody id="reportTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 9: AUDIT LOGS -->
+            <div id="tab-auditLogs" class="tab-page" style="display: none;">
+                <div class="card">
+                    <div class="card-title">System Audit Trail</div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Log ID</th>
+                                    <th>Timestamp</th>
+                                    <th>User</th>
+                                    <th>Action</th>
+                                    <th>Details</th>
+                                    <th>IP Address</th>
+                                </tr>
+                            </thead>
+                            <tbody id="auditLogsBody">
+                                <!-- Audit log entries -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL FOR LEAVE APPROVAL -->
+    <div id="approvalModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;">
+        <div class="card" style="width: 450px; max-width: 90%;">
+            <div class="card-title">Process Leave Application</div>
+            <p id="modalAppDetails" style="font-size: 0.9rem; margin-bottom: 15px;"></p>
+            <input type="hidden" id="modalAppId">
+            <div class="form-group">
+                <label for="modalComments">Supervisor Comments</label>
+                <textarea id="modalComments" class="form-control" rows="3" placeholder="Enter comments..."></textarea>
+            </div>
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button class="btn btn-secondary" onclick="closeApprovalModal()">Cancel</button>
+                <button class="btn btn-danger" onclick="submitApproval('Rejected')">Reject</button>
+                <button class="btn btn-success" onclick="submitApproval('Approved')">Approve</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FOR ADD EMPLOYEE -->
+    <div id="employeeModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; overflow-y:auto;">
+        <div class="card" style="width: 550px; max-width: 90%; max-height: 90vh; overflow-y: auto; margin-top:20px;">
+            <div class="card-title">Register New Employee</div>
+            <form id="addEmployeeForm">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Employee Number *</label>
+                        <input type="text" id="newEmpNo" class="form-control" required placeholder="EMP004">
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="newEmpName" class="form-control" required>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>NIC Number * (9 digits+V/X or 12 digits)</label>
+                        <input type="text" id="newEmpNic" class="form-control" required placeholder="199012345678">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" id="newEmpEmail" class="form-control" required>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Department *</label>
+                        <select id="newEmpDept" class="form-control" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Designation *</label>
+                        <input type="text" id="newEmpDesignation" class="form-control" required>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Supervisor</label>
+                        <select id="newEmpSupervisor" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Appointment *</label>
+                        <input type="date" id="newEmpAppDate" class="form-control" required>
+                    </div>
+                </div>
+                <hr style="margin: 15px 0;">
+                <p style="font-weight: bold; font-size: 0.9rem; margin-bottom: 10px;">User Account Setup (Optional)</p>
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="newEmpUsername" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="newEmpPassword" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select id="newEmpRole" class="form-control">
+                            <option value="Employee">Employee</option>
+                            <option value="Supervisor">Supervisor</option>
+                            <option value="HR">HR</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:15px;">
+                    <button type="button" class="btn btn-secondary" onclick="toggleEmployeeModal(false)">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Employee</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
